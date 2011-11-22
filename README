@@ -11,7 +11,7 @@ Default tasks: tasks
 clean - Cleanup the project of whatever the build process has created leaving it spic and span.
 compile - Compilation of sources
 package - Take the compiled source code and package it in a distributable format: eg: app.zip
-packageLib - Take the compiled source code and package it in a distributable format: eg: ProjectName-Version-Debug.zip
+packageLib - Take the compiled source code and package it, library and headers, in a distributable format: eg: ProjectName-Version-Debug.zip
 test - Test the compiled source code using the default Xcode4 integrated OCUnit/SenTestingKit
 
 Universal library creation
