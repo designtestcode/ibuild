@@ -6,10 +6,6 @@ ios = ' iOS'
 PROJECT_NAME = 'PROJECT_NAME' // PROJECT_NAME must be equal to MAIN_TARGET_NAME
 
 BUILD_DIR = 'build'
-CONFIGURATION = 'Release' // 'Release' or 'Debug'
-SDK_TARGET_NAME = 'iphonesimulator' // 'iphonesimulator' or 'iphoneos'
-DEFAULT_APP_VERSION = '0.0.1'
-
 
 task project_name << {
 	group = ios
