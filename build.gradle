@@ -3,9 +3,13 @@ description = 'Gradle build for iOS'
 defaultTasks = ['tasks']
 ios = ' iOS'
 
+apply plugin: 'eclipse'
+
 PROJECT_NAME = 'PROJECT_NAME' // PROJECT_NAME must be equal to MAIN_TARGET_NAME
 
+
 BUILD_DIR = 'build'
+DISTRIBUTION_DIR = "dist"
 
 task project_name << {
 	group = ios
@@ -27,6 +31,7 @@ task clean(type: Delete) {
 	group = ios
 	description = 'Cleanup the project of whatever the build process has created leaving it spic and span.'
 	delete "${BUILD_DIR}"
+	delete "${DISTRIBUTION_DIR}"
 	doLast {
 		exec {
 			executable = 'xcodebuild'
@@ -66,7 +71,6 @@ task test {
 	}
 }
 
-
 task('package', dependsOn: [compile, project_name]) {
 	group = ios
 	description = 'Take the compiled source code and package it in a distributable format: eg: app.zip'
@@ -87,7 +91,57 @@ task('package', dependsOn: [compile, project_name]) {
 
 		copy {
 			from zipFile
-			into '.'
+			into './dist'
+		}
+
+		delete zipFile
+	}
+}
+
+task('packageLib', dependsOn: [compile, project_name]) {
+	group = ios
+	description = 'Take the compiled source code and package it, library and headers, in a distributable format: eg: lib.zip'
+
+	doLast {
+		
+		def destfile = "${PROJECT_NAME}-${DEFAULT_APP_VERSION}-${CONFIGURATION}.zip"
+
+		def wd = "${BUILD_DIR}/${CONFIGURATION}-${SDK_TARGET_NAME}/"
+		def zipwd = "${wd}/${PROJECT_NAME}/"
+
+		delete zipwd
+		copy {	// copy in sub-directory to create a directory package for all distibution files
+			from wd	
+			into zipwd
+		}
+
+		header = "${HEADER_FILES}"
+		headerList = header.split(",")
+		
+		if(  headerList.size() )	{
+			//copy header file list to distribution
+			headerList.each() {
+				def fileName = it
+				fileName = fileName.trim()
+				copy {	// copy header files in directory package
+					def origin = "${PROJECT_NAME}/${fileName}"
+					from origin
+					into "${zipwd}/Headers"
+				}
+			}
+		}
+
+		exec {
+			executable = 'zip'
+			workingDir = "${wd}"
+			args = ["-yrq", "${destfile}", "${PROJECT_NAME}"]
+		}
+
+		zipFile = "${wd}/${destfile}"
+
+		copy {
+			from zipFile
+			into DISTRIBUTION_DIR
 		}
 
 		delete zipFile
