@@ -3,8 +3,6 @@ description = 'Gradle build for iOS'
 defaultTasks = ['tasks']
 ios = ' iOS'
 
-apply plugin: 'eclipse'
-
 PROJECT_NAME = 'PROJECT_NAME' // PROJECT_NAME must be equal to MAIN_TARGET_NAME
 
 
